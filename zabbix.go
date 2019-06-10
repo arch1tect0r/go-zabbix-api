@@ -40,6 +40,17 @@ func (z *ZabbixError) Error() string {
 	return z.Data
 }
 
+type ZabbixHost map[string]interface{}
+type ZabbixGraph map[string]interface{}
+type ZabbixGraphItem map[string]interface{}
+type ZabbixHostInterface map[string]interface{}
+type ZabbixHostGroup map[string]interface{}
+type ZabbixHistoryItem struct {
+	Clock  string `json:"clock"`
+	Value  string `json:"value"`
+	Itemid string `json:"itemid"`
+}
+
 type API struct {
 	url    string
 	user   string
@@ -157,8 +168,11 @@ func (api *API) Version() (string, error) {
 	return response.Result.(string), nil
 }
 
-func (api *API) CallMethod(methodGroup string, method string, data interface{}) (interface{}, error) {
-	response, err := api.ZabbixRequest(methodGroup+"."+method, data)
+/**
+Interface to the user.* calls
+*/
+func (api *API) User(method string, data interface{}) ([]interface{}, error) {
+	response, err := api.ZabbixRequest("user."+method, data)
 	if err != nil {
 		return nil, err
 	}
@@ -167,58 +181,112 @@ func (api *API) CallMethod(methodGroup string, method string, data interface{}) 
 		return nil, &response.Error
 	}
 
-	res, err := json.Marshal(response.Result)
-	ret := CreateResponseTypeByActionType(methodGroup)
-	err = json.Unmarshal(res, &ret)
-
-	return ret, err
-}
-
-/**
-Interface to the user.* calls
-*/
-func (api *API) User(method string, data interface{}) (ZabbixUsers, error) {
-	ret, err := api.CallMethod("user", method, data)
-	return ret.(ZabbixUsers), err
+	return response.Result.([]interface{}), nil
 }
 
 /**
 Interface to the host.* calls
 */
-func (api *API) Host(method string, data interface{}) (ZabbixHosts, error) {
-	ret, err := api.CallMethod("host", method, data)
-	return ret.(ZabbixHosts), err
+func (api *API) Host(method string, data interface{}) ([]ZabbixHost, error) {
+	response, err := api.ZabbixRequest("host."+method, data)
+	if err != nil {
+		return nil, err
+	}
+
+	if response.Error.Code != 0 {
+		return nil, &response.Error
+	}
+
+	// XXX uhg... there has got to be a better way to convert the response
+	// to the type I want to return
+	res, err := json.Marshal(response.Result)
+	var ret []ZabbixHost
+	err = json.Unmarshal(res, &ret)
+	return ret, nil
 }
 
 /**
 Interface to the graph.* calls
 */
-func (api *API) Graph(method string, data interface{}) (ZabbixGraphs, error) {
-	ret, err := api.CallMethod("graph", method, data)
-	return ret.(ZabbixGraphs), err
+func (api *API) Graph(method string, data interface{}) ([]ZabbixGraph, error) {
+	response, err := api.ZabbixRequest("graph."+method, data)
+	if err != nil {
+		return nil, err
+	}
+
+	if response.Error.Code != 0 {
+		return nil, &response.Error
+	}
+
+	// XXX uhg... there has got to be a better way to convert the response
+	// to the type I want to return
+	res, err := json.Marshal(response.Result)
+	var ret []ZabbixGraph
+	err = json.Unmarshal(res, &ret)
+	return ret, nil
 }
 
 /**
 Interface to the history.* calls
 */
-func (api *API) History(method string, data interface{}) (ZabbixHistoryItems, error) {
-	ret, err := api.CallMethod("history", method, data)
-	return ret.(ZabbixHistoryItems), err
+func (api *API) History(method string, data interface{}) ([]ZabbixHistoryItem, error) {
+	response, err := api.ZabbixRequest("history."+method, data)
+	if err != nil {
+		return nil, err
+	}
+
+	if response.Error.Code != 0 {
+		return nil, &response.Error
+	}
+
+	// XXX uhg... there has got to be a better way to convert the response
+	// to the type I want to return
+	res, err := json.Marshal(response.Result)
+	var ret []ZabbixHistoryItem
+	err = json.Unmarshal(res, &ret)
+	return ret, nil
 }
 
 /**
 Interface to the hostinterface.* calls
 */
 
-func (api *API) Interface(method string, data interface{}) (ZabbixHostInterfaces, error) {
-	ret, err := api.CallMethod("hostinterface", method, data)
-	return ret.(ZabbixHostInterfaces), err
+func (api *API) Interface(method string, data interface{}) ([]ZabbixHostInterface, error) {
+	response, err := api.ZabbixRequest("hostinterface."+method, data)
+	if err != nil {
+		return nil, err
+	}
+
+	if response.Error.Code != 0 {
+		return nil, &response.Error
+	}
+
+	// XXX uhg... there has got to be a better way to convert the response
+	// to the type I want to return
+	res, err := json.Marshal(response.Result)
+	var ret []ZabbixHostInterface
+	err = json.Unmarshal(res, &ret)
+	return ret, nil
 }
 
 /**
 Interface to the hostgroup.* calls
 */
-func (api *API) Hostgroup(method string, data interface{}) (ZabbixHostGroups, error) {
-	ret, err := api.CallMethod("hostgroup", method, data)
-	return ret.(ZabbixHostGroups), err
+
+func (api *API) Hostgroup(method string, data interface{}) ([]ZabbixHostInterface, error) {
+	response, err := api.ZabbixRequest("hostgroup."+method, data)
+	if err != nil {
+		return nil, err
+	}
+
+	if response.Error.Code != 0 {
+		return nil, &response.Error
+	}
+
+	// XXX uhg... there has got to be a better way to convert the response
+	// to the type I want to return
+	res, err := json.Marshal(response.Result)
+	var ret []ZabbixHostInterface
+	err = json.Unmarshal(res, &ret)
+	return ret, nil
 }
