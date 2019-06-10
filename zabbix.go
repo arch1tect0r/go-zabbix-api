@@ -177,48 +177,47 @@ func (api *API) CallMethod(methodGroup string, method string, data interface{}) 
 /**
 Interface to the user.* calls
 */
-func (api *API) User(method string, data interface{}) (ZabbixUsers, error) {
+func (api *API) User(method string, data interface{}) ([]ZabbixUser, error) {
 	ret, err := api.CallMethod("user", method, data)
-	return ret.(ZabbixUsers), err
+	return ret.([]ZabbixUser), err
 }
 
 /**
 Interface to the host.* calls
 */
-func (api *API) Host(method string, data interface{}) (ZabbixHosts, error) {
+func (api *API) Host(method string, data interface{}) ([]ZabbixHost, error) {
 	ret, err := api.CallMethod("host", method, data)
-	return ret.(ZabbixHosts), err
+	return ret.([]ZabbixHost), err
 }
 
 /**
 Interface to the graph.* calls
 */
-func (api *API) Graph(method string, data interface{}) (ZabbixGraphs, error) {
+func (api *API) Graph(method string, data interface{}) ([]ZabbixGraph, error) {
 	ret, err := api.CallMethod("graph", method, data)
-	return ret.(ZabbixGraphs), err
+	return ret.([]ZabbixGraph), err
 }
 
 /**
 Interface to the history.* calls
 */
-func (api *API) History(method string, data interface{}) (ZabbixHistoryItems, error) {
+func (api *API) History(method string, data interface{}) ([]ZabbixHistoryItem, error) {
 	ret, err := api.CallMethod("history", method, data)
-	return ret.(ZabbixHistoryItems), err
+	return ret.([]ZabbixHistoryItem), err
 }
 
 /**
 Interface to the hostinterface.* calls
 */
-
-func (api *API) Interface(method string, data interface{}) (ZabbixHostInterfaces, error) {
+func (api *API) Interface(method string, data interface{}) ([]ZabbixHostInterface, error) {
 	ret, err := api.CallMethod("hostinterface", method, data)
-	return ret.(ZabbixHostInterfaces), err
+	return ret.([]ZabbixHostInterface), err
 }
 
 /**
 Interface to the hostgroup.* calls
 */
-func (api *API) Hostgroup(method string, data interface{}) (ZabbixHostGroups, error) {
+func (api *API) Hostgroup(method string, data interface{}) ([]ZabbixHostGroup, error) {
 	ret, err := api.CallMethod("hostgroup", method, data)
-	return ret.(ZabbixHostGroups), err
+	return ret.([]ZabbixHostGroup), err
 }
